@@ -6,6 +6,28 @@
     
 <title>Castle Defense</title>
 <style>
+
+@media (orientation: portrait) {
+    body::before{
+        content:"Please rotate your device";
+        position:fixed;
+        inset:0;
+        background:black;
+        color:white;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:32px;
+        z-index:9999;
+    }
+
+    canvas,
+    #ui{
+        display:none;
+    }
+}
+
+    
 body{
     margin:0;
     overflow:hidden;
@@ -118,7 +140,7 @@ function spawnEnemy(){
 
     enemies.push({
         x:-50,
-        y:canvas.height-80,
+        y:canvas.height-120,
 
         vx:1+Math.random()*1.5,
         vy:0,
@@ -322,7 +344,7 @@ canvas.addEventListener("pointerleave", releaseEnemy);
 
 function update(){
 
-    const ground=canvas.height-80;
+    const ground=canvas.height-120;
 
     for(let i=enemies.length-1;i>=0;i--){
 
@@ -581,9 +603,9 @@ function draw(){
     ctx.fillStyle="#59ad45";
     ctx.fillRect(
         0,
-        canvas.height-50,
+        canvas.height-90,
         canvas.width,
-        50
+        90
     );
 
     ctx.fillStyle="#777";
