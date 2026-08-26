@@ -2,6 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
 <title>Castle Defense</title>
 <style>
 body{
@@ -10,9 +12,17 @@ body{
     font-family:Arial,sans-serif;
     background:#87ceeb;
 }
+
+
 canvas{
     display:block;
+    touch-action:none;
+    -webkit-user-select:none;
+    user-select:none;
 }
+
+
+    
 #ui{
     position:absolute;
     top:10px;
@@ -242,15 +252,17 @@ document.getElementById("upgradeArchers").onclick=()=>{
     });
 };
 
-canvas.addEventListener("mousedown", e => {
+canvas.style.touchAction = "none";
+
+canvas.addEventListener("pointerdown", e => {
 
     for (const enemy of enemies) {
 
         const grabBox = {
-            left: enemy.x - 30,
-            right: enemy.x + 30,
-            top: enemy.y - 75,
-            bottom: enemy.y + 30
+            left: enemy.x - 40,
+            right: enemy.x + 40,
+            top: enemy.y - 90,
+            bottom: enemy.y + 40
         };
 
         if (
@@ -268,37 +280,45 @@ canvas.addEventListener("mousedown", e => {
             break;
         }
     }
+
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
 });
 
-canvas.addEventListener("mousemove",e=>{
+canvas.addEventListener("pointermove", e => {
 
-    if(dragging){
+    if (dragging) {
 
-        throwVX=e.clientX-lastMouseX;
-        throwVY=e.clientY-lastMouseY;
+        throwVX = e.clientX - lastMouseX;
+        throwVY = e.clientY - lastMouseY;
 
-        dragging.x+=(e.clientX-dragging.x)*0.35;
-        dragging.y+=(e.clientY-dragging.y)*0.35;
+        dragging.x += (e.clientX - dragging.x) * 0.4;
+        dragging.y += (e.clientY - dragging.y) * 0.4;
     }
 
-    lastMouseX=e.clientX;
-    lastMouseY=e.clientY;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
 });
 
-canvas.addEventListener("mouseup",()=>{
+function releaseEnemy() {
 
-    if(!dragging) return;
+    if (!dragging) return;
 
-    dragging.grabbed=false;
+    dragging.grabbed = false;
 
-    dragging.vx=throwVX*1.4;
-    dragging.vy=throwVY*1.1;
+    dragging.vx = throwVX * 1.4;
+    dragging.vy = throwVY * 1.1;
 
-    dragging.rotationSpeed=
-        (Math.random()-.5)*10;
+    dragging.rotationSpeed =
+        (Math.random() - 0.5) * 10;
 
-    dragging=null;
-});
+    dragging = null;
+}
+
+canvas.addEventListener("pointerup", releaseEnemy);
+canvas.addEventListener("pointercancel", releaseEnemy);
+canvas.addEventListener("pointerleave", releaseEnemy);
+
 
 function update(){
 
