@@ -59,6 +59,12 @@ button{
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
+    document.addEventListener(
+    "touchmove",
+    e => e.preventDefault(),
+    { passive:false }
+);
+
 const enemies=[];
 const blood=[];
 const ragdolls=[];
@@ -251,7 +257,12 @@ canvas.addEventListener("mousedown",e=>{
         let dx=e.clientX-enemy.x;
         let dy=e.clientY-(enemy.y-40);
 
-        if(Math.sqrt(dx*dx+dy*dy)<25){
+if(
+    e.clientX > enemy.x - 30 &&
+    e.clientX < enemy.x + 30 &&
+    e.clientY > enemy.y - 70 &&
+    e.clientY < enemy.y + 30
+){
 
             dragging=enemy;
             enemy.grabbed=true;
@@ -288,6 +299,70 @@ canvas.addEventListener("mouseup",()=>{
         (Math.random()-.5)*10;
 
     dragging=null;
+});
+
+
+canvas.addEventListener("touchstart", e => {
+
+    const touch = e.touches[0];
+
+    lastMouseX = touch.clientX;
+    lastMouseY = touch.clientY;
+
+    for(const enemy of enemies){
+
+        if(
+            touch.clientX > enemy.x - 30 &&
+            touch.clientX < enemy.x + 30 &&
+            touch.clientY > enemy.y - 70 &&
+            touch.clientY < enemy.y + 30
+        ){
+            dragging = enemy;
+            enemy.grabbed = true;
+            break;
+        }
+    }
+
+    e.preventDefault();
+
+}, {passive:false});
+
+
+
+    canvas.addEventListener("touchmove", e => {
+
+    if(!dragging) return;
+
+    const touch = e.touches[0];
+
+    throwVX = touch.clientX - lastMouseX;
+    throwVY = touch.clientY - lastMouseY;
+
+    dragging.x += (touch.clientX - dragging.x) * 0.35;
+    dragging.y += (touch.clientY - dragging.y) * 0.35;
+
+    lastMouseX = touch.clientX;
+    lastMouseY = touch.clientY;
+
+    e.preventDefault();
+
+}, {passive:false});
+
+
+    window.addEventListener("touchend", () => {
+
+    if(!dragging) return;
+
+    dragging.grabbed = false;
+
+    dragging.vx = throwVX * 1.4;
+    dragging.vy = throwVY * 1.1;
+
+    dragging.rotationSpeed =
+        (Math.random() - 0.5) * 10;
+
+    dragging = null;
+
 });
 
 function update(){
