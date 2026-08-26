@@ -44,21 +44,31 @@ canvas{
 }
 
 
-    
-#ui{
-    position:absolute;
-    top:10px;
-    left:10px;
-    z-index:10;
-    background:rgba(255,255,255,.9);
-    padding:10px;
-    border-radius:10px;
+ #ui{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:100;
+    background:rgba(255,255,255,.95);
+    padding:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    box-sizing:border-box;
 }
+
+
+
 button{
-    padding:8px 12px;
-    margin-right:5px;
+    padding:12px 18px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
     cursor:pointer;
 }
+
 </style>
 </head>
 <body>
