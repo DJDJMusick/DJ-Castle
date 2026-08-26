@@ -242,50 +242,50 @@ document.getElementById("upgradeArchers").onclick=()=>{
     });
 };
 
-canvas.addEventListener("touchstart", e => {
-    const touch = e.touches[0];
+canvas.addEventListener("mousedown",e=>{
 
-    lastMouseX = touch.clientX;
-    lastMouseY = touch.clientY;
+    for(const enemy of enemies){
 
-    for (const enemy of enemies) {
-        const dx = touch.clientX - enemy.x;
-        const dy = touch.clientY - (enemy.y - 40);
+        let dx=e.clientX-enemy.x;
+        let dy=e.clientY-(enemy.y-40);
 
-        if (Math.sqrt(dx * dx + dy * dy) < 40) {
-            dragging = enemy;
-            enemy.grabbed = true;
+        if(Math.sqrt(dx*dx+dy*dy)<25){
+
+            dragging=enemy;
+            enemy.grabbed=true;
             break;
         }
     }
 });
 
-canvas.addEventListener("touchmove", e => {
-    if (!dragging) return;
+canvas.addEventListener("mousemove",e=>{
 
-    const touch = e.touches[0];
+    if(dragging){
 
-    throwVX = touch.clientX - lastMouseX;
-    throwVY = touch.clientY - lastMouseY;
+        throwVX=e.clientX-lastMouseX;
+        throwVY=e.clientY-lastMouseY;
 
-    dragging.x += (touch.clientX - dragging.x) * 0.35;
-    dragging.y += (touch.clientY - dragging.y) * 0.35;
+        dragging.x+=(e.clientX-dragging.x)*0.35;
+        dragging.y+=(e.clientY-dragging.y)*0.35;
+    }
 
-    lastMouseX = touch.clientX;
-    lastMouseY = touch.clientY;
+    lastMouseX=e.clientX;
+    lastMouseY=e.clientY;
+});
 
-    e.preventDefault();
-}, { passive:false });
+canvas.addEventListener("mouseup",()=>{
 
-canvas.addEventListener("touchend", () => {
-    if (!dragging) return;
+    if(!dragging) return;
 
-    dragging.grabbed = false;
-    dragging.vx = throwVX * 1.4;
-    dragging.vy = throwVY * 1.1;
-    dragging.rotationSpeed = (Math.random() - 0.5) * 10;
+    dragging.grabbed=false;
 
-    dragging = null;
+    dragging.vx=throwVX*1.4;
+    dragging.vy=throwVY*1.1;
+
+    dragging.rotationSpeed=
+        (Math.random()-.5)*10;
+
+    dragging=null;
 });
 
 function update(){
