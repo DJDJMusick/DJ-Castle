@@ -367,7 +367,7 @@ canvas.addEventListener("touchstart", e => {
 
 function update(){
 
-    const ground=canvas.height-80;
+    const ground=canvas.height-60;
 
     for(let i=enemies.length-1;i>=0;i--){
 
@@ -626,7 +626,7 @@ function draw(){
     ctx.fillStyle="#59ad45";
     ctx.fillRect(
         0,
-        canvas.height-50,
+        canvas.height-40,
         canvas.width,
         50
     );
@@ -718,10 +718,10 @@ function draw(){
         }
 
         ctx.fillRect(
-            a.x-5,
-            a.y-20,
-            10,
-            20
+            a.x-4,
+            a.y-16,
+            8,
+            16
         );
 
         ctx.fillStyle="yellow";
