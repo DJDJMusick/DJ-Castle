@@ -96,8 +96,8 @@ const MAX_ARCHERS=5;
 const castle={
     x:0,
     y:0,
-    w:160,
-    h:220,
+    w:120,
+    h:170,
     hp:100
 };
 
@@ -105,8 +105,8 @@ function resize(){
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
 
-    castle.x=canvas.width-220;
-    castle.y=canvas.height-270;
+    castle.x=canvas.width-180;
+    castle.y=canvas.height-220;
 
     updateArcherPositions();
 }
@@ -139,7 +139,7 @@ resize();
 function spawnEnemy(){
 
     enemies.push({
-        x:-50,
+        x:-150,
         y:canvas.height-120,
 
     vx:0.4+Math.random()*0.6,
