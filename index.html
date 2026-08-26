@@ -2,38 +2,81 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
 <title>Castle Defense</title>
 <style>
+
+@media (orientation: portrait) {
+    body::before{
+        content:"Please rotate your device";
+        position:fixed;
+        inset:0;
+        background:black;
+        color:white;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:32px;
+        z-index:9999;
+    }
+
+    canvas,
+    #ui{
+        display:none;
+    }
+}
+
+    
 body{
     margin:0;
     overflow:hidden;
     font-family:Arial,sans-serif;
     background:#87ceeb;
 }
+
+
 canvas{
-    display:block;
-}
-#ui{
     position:absolute;
-    top:10px;
-    left:10px;
-    z-index:10;
-    background:rgba(255,255,255,.9);
-    padding:10px;
-    border-radius:10px;
+    top:0;
+    left:0;
+    z-index:1;
+    touch-action:none;
 }
+
+
+#ui{
+    position:fixed;
+    top:10px;
+    left:0;
+    width:100%;
+    z-index:99999;
+    background:rgba(255,255,255,.95);
+    padding:10px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+}
+
+
+
 button{
-    padding:8px 12px;
-    margin-right:5px;
+    padding:12px 18px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
     cursor:pointer;
 }
+
 </style>
 </head>
 <body>
 
 <div id="ui">
     <button id="buyArcher">Buy Archer (50)</button>
-
+    <button id="upgradeArchers">Upgrade All (100)</button>
     <span id="goldDisplay">Gold: 0</span>
 </div>
 
@@ -64,8 +107,8 @@ const MAX_ARCHERS=5;
 const castle={
     x:0,
     y:0,
-    w:160,
-    h:220,
+    w:120,
+    h:170,
     hp:100
 };
 
@@ -73,8 +116,8 @@ function resize(){
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
 
-    castle.x=canvas.width-220;
-    castle.y=canvas.height-270;
+    castle.x=canvas.width-180;
+    castle.y=canvas.height-220;
 
     updateArcherPositions();
 }
@@ -107,10 +150,10 @@ resize();
 function spawnEnemy(){
 
     enemies.push({
-        x:-50,
-        y:canvas.height-80,
+        x:-150,
+        y:canvas.height-120,
 
-        vx:1+Math.random()*1.5,
+    vx:0.4+Math.random()*0.6,
         vy:0,
 
         rotation:0,
@@ -226,57 +269,93 @@ document.getElementById("buyArcher").onclick=()=>{
     updateArcherPositions();
 };
 
+document.getElementById("upgradeArchers").onclick=()=>{
 
+    if(gold<100) return;
 
-canvas.addEventListener("touchstart", e => {
-    const touch = e.touches[0];
+    gold-=100;
 
-    lastMouseX = touch.clientX;
-    lastMouseY = touch.clientY;
+    archers.forEach(a=>{
+
+        a.damage+=1;
+        a.fireRate=Math.max(
+            60,
+            a.fireRate-2
+        );
+    });
+};
+
+canvas.style.touchAction = "none";
+
+canvas.addEventListener("pointerdown", e => {
 
     for (const enemy of enemies) {
-        const dx = touch.clientX - enemy.x;
-        const dy = touch.clientY - (enemy.y - 40);
 
-        if (Math.sqrt(dx * dx + dy * dy) < 40) {
+        const grabBox = {
+            left: enemy.x - 40,
+            right: enemy.x + 40,
+            top: enemy.y - 90,
+            bottom: enemy.y + 40
+        };
+
+        if (
+            e.clientX >= grabBox.left &&
+            e.clientX <= grabBox.right &&
+            e.clientY >= grabBox.top &&
+            e.clientY <= grabBox.bottom
+        ) {
             dragging = enemy;
             enemy.grabbed = true;
+
+            throwVX = 0;
+            throwVY = 0;
+
             break;
         }
     }
+
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
 });
 
-canvas.addEventListener("touchmove", e => {
-    if (!dragging) return;
+canvas.addEventListener("pointermove", e => {
 
-    const touch = e.touches[0];
+    if (dragging) {
 
-    throwVX = touch.clientX - lastMouseX;
-    throwVY = touch.clientY - lastMouseY;
+        throwVX = e.clientX - lastMouseX;
+        throwVY = e.clientY - lastMouseY;
 
-    dragging.x += (touch.clientX - dragging.x) * 0.35;
-    dragging.y += (touch.clientY - dragging.y) * 0.35;
+        dragging.x += (e.clientX - dragging.x) * 0.4;
+        dragging.y += (e.clientY - dragging.y) * 0.4;
+    }
 
-    lastMouseX = touch.clientX;
-    lastMouseY = touch.clientY;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+});
 
-    e.preventDefault();
-}, { passive:false });
+function releaseEnemy() {
 
-canvas.addEventListener("touchend", () => {
     if (!dragging) return;
 
     dragging.grabbed = false;
+
     dragging.vx = throwVX * 1.4;
     dragging.vy = throwVY * 1.1;
-    dragging.rotationSpeed = (Math.random() - 0.5) * 10;
+
+    dragging.rotationSpeed =
+        (Math.random() - 0.5) * 10;
 
     dragging = null;
-});
+}
+
+canvas.addEventListener("pointerup", releaseEnemy);
+canvas.addEventListener("pointercancel", releaseEnemy);
+canvas.addEventListener("pointerleave", releaseEnemy);
+
 
 function update(){
 
-    const ground=canvas.height-80;
+    const ground=canvas.height-120;
 
     for(let i=enemies.length-1;i>=0;i--){
 
@@ -492,38 +571,41 @@ function update(){
         `Buy Archer (50) ${archers.length}/5`;
 }
 
+
 function drawStickman(e){
 
     ctx.save();
 
-    ctx.translate(e.x,e.y-20);
+    ctx.translate(e.x,e.y-15);
     ctx.rotate(e.rotation*Math.PI/180);
 
     ctx.strokeStyle="black";
-    ctx.lineWidth=3;
+    ctx.lineWidth=2;
 
     ctx.beginPath();
-    ctx.arc(0,-20,12,0,Math.PI*2);
+    ctx.arc(0,-15,8,0,Math.PI*2);
     ctx.stroke();
 
     ctx.beginPath();
 
-    ctx.moveTo(0,-8);
-    ctx.lineTo(0,28);
+    ctx.moveTo(0,-7);
+    ctx.lineTo(0,18);
 
-    ctx.moveTo(-12,5);
-    ctx.lineTo(12,5);
+    ctx.moveTo(-8,0);
+    ctx.lineTo(8,0);
 
-    ctx.moveTo(0,28);
-    ctx.lineTo(-10,48);
+    ctx.moveTo(0,18);
+    ctx.lineTo(-8,32);
 
-    ctx.moveTo(0,28);
-    ctx.lineTo(10,48);
+    ctx.moveTo(0,18);
+    ctx.lineTo(8,32);
 
     ctx.stroke();
 
     ctx.restore();
 }
+
+    
 
 function draw(){
 
@@ -532,12 +614,15 @@ function draw(){
     ctx.fillStyle="#87ceeb";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
+    ctx.fillStyle="#dfefff";
+ctx.fillRect(0,0,canvas.width,70);
+
     ctx.fillStyle="#59ad45";
     ctx.fillRect(
         0,
-        canvas.height-50,
+        canvas.height-90,
         canvas.width,
-        50
+        90
     );
 
     ctx.fillStyle="#777";
@@ -661,8 +746,8 @@ function draw(){
     ctx.fillStyle="black";
     ctx.font="24px Arial";
 
-    ctx.fillText("Castle HP: "+castle.hp,20,90);
-    ctx.fillText("Kills: "+score,20,120);
+ctx.fillText("Castle HP: "+castle.hp,20,100);
+ctx.fillText("Kills: "+score,20,130);
 
     if(castle.hp<=0){
 
