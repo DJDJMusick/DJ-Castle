@@ -46,7 +46,7 @@ canvas{
 
  #ui{
     position:fixed;
-    top:0;
+    top:5px;
     left:0;
     width:100%;
     z-index:100;
@@ -742,8 +742,8 @@ function draw(){
     ctx.fillStyle="black";
     ctx.font="24px Arial";
 
-    ctx.fillText("Castle HP: "+castle.hp,20,90);
-    ctx.fillText("Kills: "+score,20,120);
+ctx.fillText("Castle HP: "+castle.hp,20,40);
+ctx.fillText("Kills: "+score,20,70);
 
     if(castle.hp<=0){
 
