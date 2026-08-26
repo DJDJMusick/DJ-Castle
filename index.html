@@ -33,7 +33,7 @@ button{
 
 <div id="ui">
     <button id="buyArcher">Buy Archer (50)</button>
-    <button id="upgradeArchers">Upgrade All (100)</button>
+
     <span id="goldDisplay">Gold: 0</span>
 </div>
 
@@ -226,21 +226,7 @@ document.getElementById("buyArcher").onclick=()=>{
     updateArcherPositions();
 };
 
-document.getElementById("upgradeArchers").onclick=()=>{
 
-    if(gold<100) return;
-
-    gold-=100;
-
-    archers.forEach(a=>{
-
-        a.damage+=1;
-        a.fireRate=Math.max(
-            60,
-            a.fireRate-2
-        );
-    });
-};
 
 canvas.addEventListener("touchstart", e => {
     const touch = e.touches[0];
