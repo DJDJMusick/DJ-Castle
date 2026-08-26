@@ -56,8 +56,8 @@ button{
 <canvas id="game"></canvas>
 
 <script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
+ canvas=document.getElementById("game");
+ ctx=canvas.getContext("2d");
 
     document.addEventListener(
     "touchmove",
@@ -65,12 +65,12 @@ const ctx=canvas.getContext("2d");
     { passive:false }
 );
 
-const enemies=[];
-const blood=[];
-const ragdolls=[];
-const arrows=[];
-const archers=[];
-const effects=[];
+ enemies=[];
+ blood=[];
+ ragdolls=[];
+ arrows=[];
+ archers=[];
+ effects=[];
 
 let score=0;
 let gold=0;
@@ -81,13 +81,13 @@ let lastMouseY=0;
 let throwVX=0;
 let throwVY=0;
 
-const MAX_ARCHERS=5;
+ MAX_ARCHERS=5;
 
-const castle={
+ castle={
     x:0,
     y:0,
-    w:160,
-    h:220,
+    w:120,
+    h:170,
     hp:100
 };
 
@@ -95,7 +95,7 @@ function resize(){
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
 
-    castle.x=canvas.width-220;
+    castle.x=canvas.width-180;
     castle.y=canvas.height-270;
 
     updateArcherPositions();
@@ -132,7 +132,7 @@ function spawnEnemy(){
         x:-50,
         y:canvas.height-80,
 
-        vx:1+Math.random()*1.5,
+        vx:1+Math.random()*0.8,
         vy:0,
 
         rotation:0,
@@ -594,22 +594,22 @@ function drawStickman(e){
     ctx.lineWidth=3;
 
     ctx.beginPath();
-    ctx.arc(0,-20,12,0,Math.PI*2);
+    ctx.arc(0,-14,8,0,Math.PI*2);
     ctx.stroke();
 
     ctx.beginPath();
 
-    ctx.moveTo(0,-8);
-    ctx.lineTo(0,28);
+    ctx.moveTo(0,-4);
+    ctx.lineTo(0,20);
 
-    ctx.moveTo(-12,5);
-    ctx.lineTo(12,5);
+    ctx.moveTo(-8,3);
+    ctx.lineTo(8,3);
 
-    ctx.moveTo(0,28);
-    ctx.lineTo(-10,48);
+    ctx.moveTo(0,20);
+    ctx.lineTo(-8,34);
 
-    ctx.moveTo(0,28);
-    ctx.lineTo(10,48);
+    ctx.moveTo(0,20);
+    ctx.lineTo(8,34);
 
     ctx.stroke();
 
