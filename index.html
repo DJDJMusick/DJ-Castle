@@ -142,7 +142,7 @@ function spawnEnemy(){
         x:-50,
         y:canvas.height-120,
 
-        vx:1+Math.random()*1.5,
+    vx:0.4+Math.random()*0.6,
         vy:0,
 
         rotation:0,
@@ -560,38 +560,41 @@ function update(){
         `Buy Archer (50) ${archers.length}/5`;
 }
 
+
 function drawStickman(e){
 
     ctx.save();
 
-    ctx.translate(e.x,e.y-20);
+    ctx.translate(e.x,e.y-15);
     ctx.rotate(e.rotation*Math.PI/180);
 
     ctx.strokeStyle="black";
-    ctx.lineWidth=3;
+    ctx.lineWidth=2;
 
     ctx.beginPath();
-    ctx.arc(0,-20,12,0,Math.PI*2);
+    ctx.arc(0,-15,8,0,Math.PI*2);
     ctx.stroke();
 
     ctx.beginPath();
 
-    ctx.moveTo(0,-8);
-    ctx.lineTo(0,28);
+    ctx.moveTo(0,-7);
+    ctx.lineTo(0,18);
 
-    ctx.moveTo(-12,5);
-    ctx.lineTo(12,5);
+    ctx.moveTo(-8,0);
+    ctx.lineTo(8,0);
 
-    ctx.moveTo(0,28);
-    ctx.lineTo(-10,48);
+    ctx.moveTo(0,18);
+    ctx.lineTo(-8,32);
 
-    ctx.moveTo(0,28);
-    ctx.lineTo(10,48);
+    ctx.moveTo(0,18);
+    ctx.lineTo(8,32);
 
     ctx.stroke();
 
     ctx.restore();
 }
+
+    
 
 function draw(){
 
